@@ -176,7 +176,7 @@ background-color:white
       <number>40</number>
      </property>
      <item>
-      <widget class="QRadioButton" name="radioButton_2">
+      <widget class="QRadioButton" name="img">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -208,7 +208,7 @@ background-color:white
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="radioButton_3">
+      <widget class="QRadioButton" name="video">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -401,8 +401,8 @@ background-color:white
   <tabstop>Input</tabstop>
   <tabstop>dir</tabstop>
   <tabstop>file</tabstop>
-  <tabstop>radioButton_2</tabstop>
-  <tabstop>radioButton_3</tabstop>
+  <tabstop>img</tabstop>
+  <tabstop>video</tabstop>
   <tabstop>start</tabstop>
   <tabstop>settings</tabstop>
  </tabstops>

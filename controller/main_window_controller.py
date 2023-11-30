@@ -1,12 +1,17 @@
 
 from view import settings
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from model import yoloModel
+
+from pathlib import Path
+
 class MainWindowController():
     def __init__(self,window):
         self.window = window
         self.settings = None
+        self.model = yoloModel.YoloModel()
     def clicked_settings(self):
-        self.settings = settings.Settings()
+        self.settings = settings.Settings(self.model)
         self.settings = self.settings.create()
         self.settings.show()
 
@@ -20,8 +25,24 @@ class MainWindowController():
         self.window.Input.setText(fname)
 
     def clicked_start(self):
-        pass
+        f = Path(self.window.Input.text())
+        if (f.is_file() or f.is_dir()) and self.window.Input.text() != '' :
+            if self.window.img.isChecked():
+                self.model.create_model(self.window.Input.text(), 1)
+                print(1)
+            elif self.window.video.isChecked():
+                self.model.create_model(self.window.Input.text(), 2)
+                print(2)
+            self.model.process(self.window.Input.text())
+        else:
+            m = QMessageBox(1, "Выбор файлов", "Неверно выбрано значение")
+            m.setStyleSheet("background-color:white")
+            m.exec_()
+
+
     def close(self):
+        if self.model is not None:
+            del self.model
         if self.settings is not None:
             self.settings.close()
         self.window.close()

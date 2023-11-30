@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import uic
 from view import settings
 from controller import main_window_controller
-from images import  images_paths
+from images import images_paths
 import os
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -22,6 +22,7 @@ class MainWindow(QMainWindow):
         return self
     def show(self):
         super().show()
+        return self
 
     def closeEvent(self, QCloseEvent):
         self.controller.close()

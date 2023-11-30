@@ -4,9 +4,9 @@ from images import  images_paths
 import os
 from controller import settings
 class Settings(QMainWindow):
-    def __init__(self):
+    def __init__(self,model):
         super().__init__()
-        self.controller = settings.SettingsController(self)
+        self.controller = settings.SettingsController(self,model)
 
     def create(self):
         uic.loadUi(os.path.join(os.path.dirname(__file__), '..\\ui\\settings.ui'), self)
@@ -17,7 +17,7 @@ class Settings(QMainWindow):
 
         self.weights.setText(self.controller.model.path_weights)
         self.conf.setText(str(self.controller.model.conf))
-        self.iou.setText(str(self.controller.model.uoi))
+        self.iou.setText(str(self.controller.model.iou))
         self.imgsz.setText(str(self.controller.model.imgsz))
 
         return self
