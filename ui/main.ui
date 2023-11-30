@@ -395,6 +395,42 @@ background-color:white
      </size>
     </property>
    </widget>
+   <widget class="QPushButton" name="clearlogs">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>0</y>
+      <width>31</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Очистить логи</string>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton{
+	color:black;
+	background-color:transparent;
+}
+QPushButton::hover{
+	background-color:white;
+}
+</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset resource="../images_paths.qrc">
+      <normaloff>:/images/images/dustbin.svg</normaloff>:/images/images/dustbin.svg</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>64</width>
+      <height>32</height>
+     </size>
+    </property>
+   </widget>
   </widget>
  </widget>
  <tabstops>

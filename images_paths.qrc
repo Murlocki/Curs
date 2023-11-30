@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="images">
     <file>images/directory.svg</file>
+    <file>images/dustbin.svg</file>
     <file>images/file.svg</file>
     <file>images/icon.png</file>
     <file>images/settings.svg</file>

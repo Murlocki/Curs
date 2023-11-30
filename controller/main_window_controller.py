@@ -2,7 +2,7 @@
 from view import settings
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from model import yoloModel
-
+import os
 from pathlib import Path
 
 class MainWindowController():
@@ -34,12 +34,18 @@ class MainWindowController():
                 self.model.create_model(self.window.Input.text(), 2)
                 print(2)
             self.model.process(self.window.Input.text())
+
         else:
             m = QMessageBox(1, "Выбор файлов", "Неверно выбрано значение")
             m.setStyleSheet("background-color:white")
             m.exec_()
 
-
+    def clicked_clear(self):
+        with open(os.path.join(os.path.dirname(__file__), '..\logs\logs.txt'), 'w') as file:
+            pass
+        m = QMessageBox(1, "Очистка логов", "Успешное очищено")
+        m.setStyleSheet("background-color:white")
+        m.exec_()
     def close(self):
         if self.model is not None:
             del self.model

@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         self.dir.clicked.connect(lambda :self.controller.clicked_dir())
         self.file.clicked.connect(lambda: self.controller.clicked_file())
         self.start.clicked.connect(lambda :self.controller.clicked_start())
-
+        self.clearlogs.clicked.connect(lambda :self.controller.clicked_clear())
         return self
     def show(self):
         super().show()
