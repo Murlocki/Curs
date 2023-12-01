@@ -1,4 +1,4 @@
-import validators
+
 from ultralytics import YOLO
 import os
 from pathlib import Path
