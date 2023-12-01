@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from model import yoloModel
 import os
 from pathlib import Path
-
+import validators
 class MainWindowController():
     def __init__(self,window):
         self.window = window
@@ -26,12 +26,12 @@ class MainWindowController():
 
     def clicked_start(self):
         f = Path(self.window.Input.text())
-        if (f.is_file() or f.is_dir()) and self.window.Input.text() != '' :
+        if (f.is_file() or f.is_dir() ) and self.window.Input.text() != '':
             if self.window.img.isChecked():
-                self.model.create_model(self.window.Input.text(), 1)
+                self.model = self.model.create_model(self.window.Input.text(), 1)
                 print(1)
             elif self.window.video.isChecked():
-                self.model.create_model(self.window.Input.text(), 2)
+                self.model = self.model.create_model(self.window.Input.text(), 2)
                 print(2)
             self.model.process(self.window.Input.text())
 

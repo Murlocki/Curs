@@ -165,15 +165,15 @@ background-color:white
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>60</x>
+      <x>0</x>
       <y>200</y>
-      <width>381</width>
+      <width>521</width>
       <height>80</height>
      </rect>
     </property>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
      <property name="spacing">
-      <number>40</number>
+      <number>0</number>
      </property>
      <item>
       <widget class="QRadioButton" name="img">
@@ -185,7 +185,7 @@ background-color:white
        </property>
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>8</pointsize>
          <weight>50</weight>
          <italic>false</italic>
          <bold>false</bold>
@@ -200,7 +200,7 @@ background-color:white
         <string notr="true">color:white;</string>
        </property>
        <property name="text">
-        <string>Картинка</string>
+        <string>Обработка с сохранением</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -217,7 +217,7 @@ background-color:white
        </property>
        <property name="font">
         <font>
-         <pointsize>10</pointsize>
+         <pointsize>8</pointsize>
         </font>
        </property>
        <property name="styleSheet">
@@ -225,7 +225,7 @@ background-color:white
 </string>
        </property>
        <property name="text">
-        <string>Видео</string>
+        <string>Показ видео без сохранения</string>
        </property>
       </widget>
      </item>
@@ -437,8 +437,6 @@ QPushButton::hover{
   <tabstop>Input</tabstop>
   <tabstop>dir</tabstop>
   <tabstop>file</tabstop>
-  <tabstop>img</tabstop>
-  <tabstop>video</tabstop>
   <tabstop>start</tabstop>
   <tabstop>settings</tabstop>
  </tabstops>
