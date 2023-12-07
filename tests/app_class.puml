@@ -1,0 +1,113 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class Model{
+    - _model: YOLO
+    + __init__(weights_path: String )
+    + {abstract} process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
+    + {abstract} write_log(results: Result): Model
+    ..Setters..
+    + model=(YOLO)
+    ..Getters..
+    + model(): YOLO
+}
+
+class ModelOnePng{
+    + __init__(weights_path: String): ModelOnePng
+    + process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
+    + write_log(results: Result): Model
+    + show_imgs(results: Result)): Model
+}
+class ModelMultiple{
+    + __init__(weights_path: String): ModelMultiple
+    + process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
+    + write_log(results: Result): Model
+    + show_imgs(results: Result)): Model
+}
+class ModelShowVideo{
+    + __init__(weights_path: String): ModelShowVideo
+    + process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
+    + write_log(results: Result): Model
+}
+
+class YoloModel {
+- _path_weights: String
+- _imgsz: Integer
+- _conf: Float
+- _iou: Float
+- _model: Model
++ __init__(imgsz: Integer, path: String, conf: Float, iou: Float): YoloModel
++ change_parameters(imgsz: Integer, path: String, conf: Float, iou: Float): YoloModel
++ create_model(path: String, number: Integer): YoloModel
++ process(path: String): YoloModel
+..Setter..
++ path_weights=(String)
++ imgsz=(Integer)
++ conf = (Float)
++ iou = (Float)
++ model = (Model)
+..Getters..
++ path_weights(): String
++ imgsz(): Integer
++ conf(): Float
++ iou(): Float
++ model(): Model
+}
+
+class Settings{
++ controller: SettingsController
++ create(): Settings
++ show(): Settings
+}
+class MainWindow{
++ controller: MainWindowController
++ create(): MainWindow
++ show(): MainWindow
++ closeEvent(): None
+}
+class MainWindowController{
++ _window: MainWindow
++ _model: YoloModel
++ clicked_settings(): None
++ clicked_dir(): None
++ clicked_file(): None
++ clicked_start(): None
++ clicked_clear(): None
+..Setters..
++ window = (MainWindow)
++ model = (YoloModel)
+..Getters..
++ window(): MainWindow
++ model(): YoloModel
+}
+class SettingsController{
++ _window: Settings
++ _model: YoloModel
++ choose_weights(): None
++ change_model(): None
++ create_model(): None
++ close(): None
+..Setters..
++ window = (Settings)
++ model = (YoloModel))
+..Getters..
++ window(): Settings
++ model(): YoloModel
+}
+
+Model <|-- ModelOnePng
+Model <|-- ModelMultiple
+Model <|-- ModelShowVideo
+
+YoloModel *-- Model
+
+MainWindow *-- MainWindowController
+MainWindowController *-- MainWindow
+
+Settings *-- SettingsController
+SettingsController *-- Settings
+SettingsController o-- YoloModel
+
+MainWindowController *-- YoloModel
+
+@enduml

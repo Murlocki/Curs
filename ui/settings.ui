@@ -331,7 +331,7 @@ background-color:white
 </string>
     </property>
    </widget>
-   <widget class="QLabel" name="iou_title_2">
+   <widget class="QLabel" name="imgsz_2">
     <property name="geometry">
      <rect>
       <x>60</x>

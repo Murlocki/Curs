@@ -24,3 +24,4 @@ class Settings(QMainWindow):
 
     def show(self):
         super().show()
+        return self

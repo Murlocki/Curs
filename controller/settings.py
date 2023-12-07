@@ -9,8 +9,23 @@ from model import yoloModel
 
 class SettingsController():
     def __init__(self, window, model):
-        self.window = window
-        self.model = model
+        self._window = window
+        self._model = model
+
+    @property
+    def window(self):
+        return self._window
+    @window.setter
+    def window(self,new):
+        self._window = new
+
+    @property
+    def model(self):
+        return self._model
+    @model.setter
+    def model(self,new):
+        self._model = new
+
 
     def choose_weights(self):
         dialog = QFileDialog()
@@ -69,6 +84,7 @@ class SettingsController():
 
     def create_model(self):
         self.model = yoloModel.YoloModel()
+
 
     def close(self):
         self.window.close()

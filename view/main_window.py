@@ -25,7 +25,8 @@ class MainWindow(QMainWindow):
         return self
 
     def closeEvent(self, QCloseEvent):
-        self.controller.close()
+        del self.controller
+        sys.exit()
 
 
 

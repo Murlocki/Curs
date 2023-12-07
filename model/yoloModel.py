@@ -1,17 +1,27 @@
-
+from abc import ABC, abstractmethod
 from ultralytics import YOLO
 import os
 from pathlib import Path
 import sys
 import cv2
 
-class Model:
+class Model(ABC,object):
     def __init__(self, weights_path):
-        self.model = YOLO(weights_path)
+        self._model = YOLO(weights_path)
 
+    @property
+    def model(self):
+        return self._model
+    @model.setter
+    def model(self,new):
+        self._model = new
+
+
+    @abstractmethod
     def process(self, path, imgsz, conf, iou):
         pass
 
+    @abstractmethod
     def write_log(self,results):
         pass
 
@@ -31,7 +41,7 @@ class ModelOnePng(Model):
                 boxes = res.boxes.cpu().numpy()
                 file.write(f'{boxes.cls[0]} {boxes.xywhn[0][0]} {boxes.xywhn[0][1]} {boxes.xywhn[0][2]} {boxes.xywhn[0][3]}\n')
                 print(boxes.cls, boxes.xywhn)
-
+        return self
     def show_imgs(self,results):
         i = Path(results[0].path).name
         img = cv2.imread(results[0].save_dir+r'\\'+i, cv2.IMREAD_ANYCOLOR)
@@ -40,7 +50,7 @@ class ModelOnePng(Model):
             cv2.imshow("result", img)
             if cv2.waitKey(0):
                 break
-
+        return self
 
 class ModelMultiple(Model):
     def __init__(self, weights_path):
@@ -60,12 +70,12 @@ class ModelMultiple(Model):
                     print(f'{boxes.cls[0]} {boxes.xywhn[0][0]} {boxes.xywhn[0][1]} {boxes.xywhn[0][2]} {boxes.xywhn[0][3]}\n')
                     file.write(f'{boxes.cls[0]} {boxes.xywhn[0][0]} {boxes.xywhn[0][1]} {boxes.xywhn[0][2]} {boxes.xywhn[0][3]}\n')
                     print(boxes.cls, boxes.xywhn)
-
+        return self
     def show_imgs(self,results):
         import webbrowser
         path = results[0].save_dir+r'\\'
         webbrowser.open(path)
-
+        return self
 class ModelShowVideo(Model):
     def __init__(self, weights_path):
         super().__init__(weights_path)
@@ -85,11 +95,47 @@ class ModelShowVideo(Model):
         return self
 class YoloModel:
     def __init__(self, imgsz=640, path=os.path.join(os.path.dirname(__file__), r'..\weights\yolo_w.pt'), conf=0.25, iou = 0.7):
-        self.path_weights = path
-        self.imgsz = imgsz
-        self.conf = conf
-        self.iou = iou
-        self.model = None
+        self._path_weights = path
+        self._imgsz = imgsz
+        self._conf = conf
+        self._iou = iou
+        self._model = None
+
+    @property
+    def path_weights(self):
+        return self._path_weights
+    @path_weights.setter
+    def path_weights(self,new):
+        self._path_weights = new
+
+    @property
+    def imgsz(self):
+        return self._imgsz
+    @imgsz.setter
+    def imgsz(self,new):
+        self._imgsz = new
+
+    @property
+    def conf(self):
+        return self._conf
+    @conf.setter
+    def conf(self,new):
+        self._conf = new
+
+    @property
+    def iou(self):
+        return self._iou
+    @iou.setter
+    def iou(self,new):
+        self._iou = new
+
+    @property
+    def model(self):
+        return self._model
+    @model.setter
+    def model(self,new):
+        self._model = new
+
     def change_parameters(self, imgsz, path, conf, iou):
         if path != '':
             self.path_weights = path
@@ -111,11 +157,8 @@ class YoloModel:
         else:
             self.iou = 0.7
         print(self.path_weights, self.imgsz, self.conf, self.iou)
-
+        return self
     def create_model(self, path, number):
-        if self.model is not None:
-            del self.model
-
         file = Path(path)
         if file.is_file():
             if number == 1:

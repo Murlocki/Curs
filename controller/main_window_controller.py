@@ -7,13 +7,28 @@ from pathlib import Path
 import validators
 class MainWindowController():
     def __init__(self,window):
-        self.window = window
-        self.settings = None
-        self.model = yoloModel.YoloModel()
+        self._window = window
+        self._model = yoloModel.YoloModel()
     def clicked_settings(self):
-        self.settings = settings.Settings(self.model)
-        self.settings = self.settings.create()
-        self.settings.show()
+        sets = settings.Settings(self.model)
+        sets = sets.create()
+        sets.show()
+
+    @property
+    def window(self):
+        return self._window
+    @window.setter
+    def window(self,new):
+        self._window = new
+
+    @property
+    def model(self):
+        return self._model
+    @model.setter
+    def model(self,new):
+        self._model = new
+
+
 
     def clicked_dir(self):
         dialog = QFileDialog()
@@ -46,9 +61,4 @@ class MainWindowController():
         m = QMessageBox(1, "Очистка логов", "Успешное очищено")
         m.setStyleSheet("background-color:white")
         m.exec_()
-    def close(self):
-        if self.model is not None:
-            del self.model
-        if self.settings is not None:
-            self.settings.close()
-        self.window.close()
+
