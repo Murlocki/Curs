@@ -2,11 +2,11 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog
 from PyQt5 import uic
 from images import  images_paths
 import os
-from controller import settings
+from controller import settings_controller
 class Settings(QMainWindow):
     def __init__(self,model):
         super().__init__()
-        self.controller = settings.SettingsController(self,model)
+        self.controller = settings_controller.SettingsController(self,model)
 
     def create(self):
         uic.loadUi(os.path.join(os.path.dirname(__file__), '..\\ui\\settings.ui'), self)
