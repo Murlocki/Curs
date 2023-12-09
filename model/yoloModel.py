@@ -27,11 +27,10 @@ class Model(ABC,object):
 
 
 class ModelOnePng(Model):
-    def __init__(self, weights_path):
-        super().__init__(weights_path)
+
 
     def process(self, path, imgsz, conf, iou):
-        result = self.model(source=path, imgsz=imgsz, conf=conf, iou=iou,save=True,save_txt=True, project=os.path.join(os.path.dirname(__file__), r'..\runs'), name='detect')
+        result = self.model(source=path, imgsz=imgsz, conf=conf, iou=iou,save=True,save_txt=True, project=os.path.join(os.path.dirname(__file__), r'..\runs'), name='detect',vid_stride=5)
         self.write_log(results=result)
         self.show_imgs(result)
         return self
@@ -44,17 +43,20 @@ class ModelOnePng(Model):
         return self
     def show_imgs(self,results):
         i = Path(results[0].path).name
-        img = cv2.imread(results[0].save_dir+r'\\'+i, cv2.IMREAD_ANYCOLOR)
-
-        while True:
-            cv2.imshow("result", img)
-            if cv2.waitKey(0):
-                break
+        i=i.replace('.mp4','.avi')
+        print(i)
+        cap = cv2.VideoCapture(results[0].save_dir+r'\\'+i)
+        ret = True
+        while ret:
+            ret, frame = cap.read()
+            if ret:
+                cv2.imshow('frame', frame)
+                if cv2.waitKey(25) & 0xFF == ord('q'):
+                    break
         return self
 
 class ModelMultiple(Model):
-    def __init__(self, weights_path):
-        super().__init__(weights_path)
+
 
     def process(self, path, imgsz, conf, iou):
         result = self.model(source=path, imgsz=imgsz, conf=conf, iou=iou,save=True,save_txt=True, project=os.path.join(os.path.dirname(__file__), r'..\runs'), name='detect')
@@ -77,22 +79,28 @@ class ModelMultiple(Model):
         webbrowser.open(path)
         return self
 class ModelShowVideo(Model):
-    def __init__(self, weights_path):
-        super().__init__(weights_path)
+
 
     def process(self, path, imgsz, conf, iou):
         cap = cv2.VideoCapture(path)
         ret = True
+        time_skips = float(150)
+        count = 0
         while ret:
             ret,frame = cap.read()
             if ret:
-                result = self.model.track(frame, imgsz=imgsz, conf=conf, iou=iou,
-                                  project=os.path.join(os.path.dirname(__file__), r'..\runs'), name='detect',persist=True)
+                result = self.model.predict(frame, imgsz=imgsz, conf=conf, iou=iou,
+                                  project=os.path.join(os.path.dirname(__file__), r'..\runs'), name='detect')
+                cap.set(cv2.CAP_PROP_POS_MSEC,(count * time_skips))
+                count+=1
                 frame_ = result[0].plot()
                 cv2.imshow('frame',frame_)
                 if cv2.waitKey(25) & 0xFF==ord('q'):
                     break
         return self
+
+    def write_log(self,results):
+        pass
 class YoloModel:
     def __init__(self, imgsz=640, path=os.path.join(os.path.dirname(__file__), r'..\weights\yolo_w.pt'), conf=0.25, iou = 0.7):
         self._path_weights = path

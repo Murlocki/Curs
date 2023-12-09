@@ -13,19 +13,16 @@ abstract class Model{
 }
 
 class ModelOnePng{
-    + __init__(weights_path: String): ModelOnePng
     + process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
     + write_log(results: Result): Model
     + show_imgs(results: Result)): Model
 }
 class ModelMultiple{
-    + __init__(weights_path: String): ModelMultiple
     + process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
     + write_log(results: Result): Model
     + show_imgs(results: Result)): Model
 }
 class ModelShowVideo{
-    + __init__(weights_path: String): ModelShowVideo
     + process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
     + write_log(results: Result): Model
 }
