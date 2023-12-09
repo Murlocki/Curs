@@ -16,7 +16,7 @@ if __name__=='__main__':
          #   n = []
           #  f = os.path.join(r'..\weights',  filename)
            # model = YOLO(f)
-            #result = model.val(data = r'C:\Users\kiril\PycharmProjects\Curs\tests\shopping-trolley-2\data.yaml')
+            #result = model.val(data = r'C:\Users\kiril\PycharmProjects\Curs\diagrams\shopping-trolley-2\data.yaml')
             #print(result.box.map,
             #result.box.map50,
             #result.box.map75,
