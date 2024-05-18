@@ -75,11 +75,21 @@ class SettingsController():
                 m = QMessageBox(1, "Выбор разрешения", "Неверно выбрано значение")
                 m.setStyleSheet("background-color:white")
                 m.exec_()
-        if k == 4:
+        if k==4:
+            classify_conf = self.window.class_conf.text()
+            try:
+                if float(classify_conf)>=0:
+                    k=k+1
+            except Exception:
+                m = QMessageBox(1, "Выбор точности классификации", "Неверно выбрано значение")
+                m.setStyleSheet("background-color:white")
+                m.exec_()
+        if k == 5:
             conf = float(conf)
             iou = float(iou)
             imgsz = int(imgsz)
-            self.model.change_parameters(imgsz, w_path, conf, iou)
+            classify_conf = float(classify_conf)
+            self.model.change_parameters(imgsz, w_path, conf, iou,classify_conf)
             self.close()
 
     def create_model(self):

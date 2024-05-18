@@ -102,7 +102,7 @@ class ModelShowVideo(Model):
     def write_log(self,results):
         pass
 class YoloModel:
-    def __init__(self, imgsz=640, path=os.path.join(os.path.dirname(__file__), r'..\weights\yolo_w.pt'), conf=0.25, iou = 0.7):
+    def __init__(self, imgsz=640, path=os.path.join(os.path.dirname(__file__), r'..\weights\yoloObjDetect\yolo_w.pt'), conf=0.25, iou = 0.7):
         self._path_weights = path
         self._imgsz = imgsz
         self._conf = conf

@@ -19,7 +19,7 @@ class Settings(QMainWindow):
         self.conf.setText(str(self.controller.model.conf))
         self.iou.setText(str(self.controller.model.iou))
         self.imgsz.setText(str(self.controller.model.imgsz))
-
+        self.class_conf.setText(str(self.controller.model.classify_conf))
         return self
 
     def show(self):

@@ -2,13 +2,14 @@
 from view import settings
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
 from model import yoloModel
+from model import ComplexModel
 import os
 from pathlib import Path
 import validators
 class MainWindowController():
     def __init__(self,window):
         self._window = window
-        self._model = yoloModel.YoloModel()
+        self._model = ComplexModel.ComplexModel()
     def clicked_settings(self):
         sets = settings.Settings(self.model)
         sets = sets.create()
