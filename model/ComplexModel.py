@@ -1,6 +1,10 @@
 import os
 from pathlib import Path
 
+from model.ClassifyModel import DenseModel, InceptionModel, YoloModel
+from model.ProcessModel import DirModel, VideoModel
+from model.YoloDetect import YoloDetect
+
 
 #Класс составной модели
 class ComplexModel:
@@ -12,6 +16,35 @@ class ComplexModel:
         self._iou = iou
         self._classify_conf = classify_conf
         self._model = None
+        self._model_classify = None
+        self._color_coef = 1
+        self._contrast_coef = 1
+        self._bright_coef = 1
+
+    @property
+    def color_coef(self):
+        return self._color_coef
+
+    @color_coef.setter
+    def color_coef(self, new):
+        self._color_coef = new
+
+    @property
+    def contrast_coef(self):
+        return self._contrast_coef
+
+    @contrast_coef.setter
+    def contrast_coef(self, new):
+        self._contrast_coef = new
+
+    @property
+    def bright_coef(self):
+        return self._bright_coef
+
+    @bright_coef.setter
+    def bright_coef(self, new):
+        self._bright_coef = new
+
 
     @property
     def classify_conf(self):
@@ -60,47 +93,74 @@ class ComplexModel:
     def model(self, new):
         self._model = new
 
-    def change_parameters(self, imgsz, path, conf, iou,classify_conf):
-        if path != '':
-            self.path_weights = path
+    @property
+    def model_classify(self):
+        return self._model_classify
+    @model_classify.setter
+    def model_classify(self,new):
+        self._model_classify = new
+
+    def change_parameters(self, imgsz, path, conf, iou,classify_conf,bright_coef,contrast_coef,color_coef):
+
+        self.path_weights = path if path!='' else r'..\weights\yoloObjDetect\yolo_w.pt'
+        self.imgsz = imgsz if imgsz != -1 else 640
+        self.conf = conf if conf != -1 else 0.25
+        self.iou = iou if iou !=-1 else 0.7
+        self.classify_conf = classify_conf if classify_conf!=-1 else 0.6
+        self.bright_coef = bright_coef if bright_coef != -1 else 1
+        self.contrast_coef = contrast_coef if contrast_coef !=-1 else 1
+        self.color_coef = color_coef if color_coef !=-1 else 1
+
+        print(self.path_weights, self.imgsz, self.conf, self.iou,self.classify_conf,self.bright_coef,self.contrast_coef,self.color_coef)
+
+    def create_model(self,classify_model_choose="inception"):
+
+        if classify_model_choose=="dense":
+            self.model_classify = DenseModel(os.path.join(os.path.dirname(__file__), r'..\weights\denseClassify\dense_w.pt'),self._classify_conf)
+        elif classify_model_choose=="inception":
+            self.model_classify = InceptionModel(
+                os.path.join(os.path.dirname(__file__), r'..\weights\inceptionClassify\inception_w.pt'), self._classify_conf)
+        elif classify_model_choose=="yolo":
+            self.model_classify = YoloModel(
+                os.path.join(os.path.dirname(__file__), r'..\weights\yoloClassify\yolo_classify_w.pt'), self._classify_conf)
+        self.model_classify.createModel()
+        self.model = YoloDetect()
+
+    def createSaveDir(self):
+        saved_runs = os.listdir(os.path.join(os.path.dirname(__file__), r'..\runs'))
+        if (not len(saved_runs)):
+            save_path = os.path.join(os.path.dirname(__file__), r'..\runs\trolley1')
         else:
-            self.path_weights = r'..\weights\yolo_w.pt'
+            max_number =1
+            for saved_run in saved_runs:
+                if int(saved_run.split("trolley")[-1])>max_number:
+                    max_number = int(saved_run.split("trolley")[-1])
+            max_number+=1
+            save_path = os.path.join(os.path.dirname(__file__), r'..\runs\trolley' + str(max_number))
+        os.mkdir(save_path)
+        os.mkdir(save_path + '\\detect')
+        os.mkdir(save_path + '\\classify')
+        os.mkdir(save_path + '\\result')
+        return save_path
 
-        if imgsz != -1:
-            self.imgsz = imgsz
+    def passParameters(self):
+        self.model_classify.classify_conf = self.classify_conf
+        self.model_classify.color_coef = self.color_coef
+        self.model_classify.contrast_coef = self.contrast_coef
+        self.model_classify.bright_coef = self.bright_coef
+        self.model.path_weights = self.path_weights
+        self.model.imgsz = self.imgsz
+        self.model.conf = self.conf
+        self.model.iou = self.iou
+
+    def process(self, path,showRegime):
+        save_path = self.createSaveDir()
+        self.passParameters()
+        if showRegime==1:
+            main_model = DirModel(self.model,self.model_classify,path,save_path)
         else:
-            self.imgsz = 640
+            main_model = VideoModel(self.model,self.model_classify,path,save_path)
+        main_model.process()
 
-        if conf != -1:
-            self.conf = conf
-        else:
-            self.conf = 0.25
 
-        if iou != -1:
-            self.iou = iou
-        else:
-            self.iou = 0.7
 
-        if classify_conf!=-1:
-            self.classify_conf = classify_conf
-        else:
-            self.classify_conf=0.6
-
-        print(self.path_weights, self.imgsz, self.conf, self.iou,self.classify_conf)
-        return self
-
-    def create_model(self, path, number):
-        file = Path(path)
-        # if file.is_file():
-        #     if number == 1:
-        #         self.model = ModelOnePng(self.path_weights)
-        #     elif number == 2:
-        #         self.model = ModelShowVideo(self.path_weights)
-        # elif file.is_dir():
-        #     self.model = ModelMultiple(self.path_weights)
-        # return self
-
-    def process(self, path):
-        pass
-        # self.model = self.model.process(path, self.imgsz, self.conf, self.iou)
-        # return self

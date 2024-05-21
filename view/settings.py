@@ -20,6 +20,9 @@ class Settings(QMainWindow):
         self.iou.setText(str(self.controller.model.iou))
         self.imgsz.setText(str(self.controller.model.imgsz))
         self.class_conf.setText(str(self.controller.model.classify_conf))
+        self.bright_coef.setText(str(self.controller.model.bright_coef))
+        self.contr_coef.setText(str(self.controller.model.contrast_coef))
+        self.color_coef.setText(str(self.controller.model.color_coef))
         return self
 
     def show(self):

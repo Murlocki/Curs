@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 from pathlib import Path
 
-from model import yoloModel
+from model import YoloDetect
 
 
 class SettingsController():
@@ -84,16 +84,45 @@ class SettingsController():
                 m = QMessageBox(1, "Выбор точности классификации", "Неверно выбрано значение")
                 m.setStyleSheet("background-color:white")
                 m.exec_()
-        if k == 5:
+        if k==5:
+            color_coef = self.window.color_coef.text()
+            try:
+                if float(color_coef)>0:
+                    k=k+1
+            except Exception:
+                m = QMessageBox(1, "Выбор коэффициента увеличения насыщенности изображения", "Неверно выбрано значение")
+                m.setStyleSheet("background-color:white")
+                m.exec_()
+        if k==6:
+            bright_coef = self.window.bright_coef.text()
+            try:
+                if float(bright_coef)>=0:
+                    k=k+1
+            except Exception:
+                m = QMessageBox(1, "Выбор коэффициента яркости изображения", "Неверно выбрано значение")
+                m.setStyleSheet("background-color:white")
+                m.exec_()
+        if k==7:
+            contrast_coef = self.window.contr_coef.text()
+            try:
+                if float(contrast_coef)>=0:
+                    k=k+1
+            except Exception:
+                m = QMessageBox(1, "Выбор коэффициента контраста изображения", "Неверно выбрано значение")
+                m.setStyleSheet("background-color:white")
+                m.exec_()
+        if k == 8:
             conf = float(conf)
             iou = float(iou)
             imgsz = int(imgsz)
             classify_conf = float(classify_conf)
-            self.model.change_parameters(imgsz, w_path, conf, iou,classify_conf)
+            bright_coef = float(bright_coef)
+            contrast_coef = float(contrast_coef)
+            color_coef = float(color_coef)
+            self.model.change_parameters(imgsz, w_path, conf, iou,classify_conf,bright_coef,contrast_coef,color_coef)
             self.close()
 
-    def create_model(self):
-        self.model = yoloModel.YoloModel()
+
 
 
     def close(self):

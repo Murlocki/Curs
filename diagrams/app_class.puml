@@ -1,55 +1,170 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class Model{
-    - _model: YOLO
-    + __init__(weights_path: String )
-    + {abstract} process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
-    + {abstract} write_log(results: Result): Model
+class ComplexModel{
+    - _path_weights: String
+    - _imgsz: Integer
+    - _conf: Float
+    - _iou: Float
+    - _classify_conf: Float
+    - _model: YoloDetect
+    - _model_classify: ClassifyModel
+    - _color_coef: Float
+    - _contrast_coef: Float
+    - _bright_coef: Float
+    --Constructor--
+    + __init__(imgsz:Integer, path:String, conf:Float, iou:Float,classify_conf:Float )
     ..Setters..
-    + model=(YOLO)
+    + model=(YoloDetect)
+    + classify_conf=(Float)
+    + path_weights=(String)
+    + imgsz=(Integer)
+    + conf=(Float)
+    + iou=(Float)
+    + model_classify=(ClassifyModel)
+    + color_coef=(Float)
+    + contrast_coef=(Float)
+    + bright_coef=(Float)
     ..Getters..
-    + model(): YOLO
+    + model(): YoloDetect
+    + classify_conf(): Float
+    + path_weights(): String
+    + imgsz(): Integer
+    + conf(): Float
+    + iou(): Float
+    + model_classify(): ClassifyModel
+    + color_coef: Float
+    + contrast_coef: Float
+    + bright_coef: Float
+    --Methods--
+    + change_parameters(imgsz:Integer, path:String, conf:Float, iou:Float,classify_conf:Float, bright_coef: Float, contrast_coef: Float, color_coef: Float ): void
+    + create_model(classify_model_choose: String)
+    + createSaveDir(): String
+    + passParameters()
+    + process(path: String)
 }
 
-class ModelOnePng{
-    + process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
-    + write_log(results: Result): Model
-    + show_imgs(results: Result)): Model
+abstract class ProcessModel{
+    _detectModel: YoloDetect
+    _classifyModel: ClassifyModel
+    _processPath: String
+    _savePath: String
+    --Constructor--
+    + __init__(detectModel: YoloDetect,classifyModel:ClassifyModel,processPath:String,savePath:String)
+    --Setters--
+    + detectModel=(YoloDetect)
+    + classifyModel=(ClassifyModel)
+    + processPath=(String)
+    + savePath=(String)
+    --Getters--
+    + detectModel() : YoloDetect
+    + classifyModel(): ClassifyModel
+    + processPath(): String
+    + savePath(): String
+    --Methods--
+    + {abstract} process(): void
 }
-class ModelMultiple{
-    + process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
-    + write_log(results: Result): Model
-    + show_imgs(results: Result)): Model
+ComplexModel <-- ProcessModel
+
+class DirModel{
+    --Methods--
+    + process():void
 }
-class ModelShowVideo{
-    + process(path: String, imgsz: Integer, conf: Float, iou: Float): Model
-    + write_log(results: Result): Model
+class VideoModel{
+    --Methods--
+    + process(): void
+    + processOneRes(results: list,original_frame:numpy.array): numpy.array
+}
+ProcessModel <|-- DirModel
+ProcessModel <|-- VideoModel
+
+
+abstract class ClassifyModel{
+    - _weight_path: String
+    - _classify_conf: Float
+    - _model: torchvision.models.Model
+    - _device: String
+    - _transforms: torchvision.transforms.Compose
+    - _color_coef: Float
+    - _contrast_coef: Float
+    - _bright_coef: Float
+    --Constructor--
+    + __init__(weight_path:String,classify_conf:Float)
+    --Setters--
+    + model=(torchvision.models.Model)
+    + transforms=(torchvision.transforms.Compose)
+    + device=(String)
+    + weight_path=(String)
+    + classify_conf=(Float)
+    + color_coef=(Float)
+    + contrast_coef=(Float)
+    + bright_coef=(Float)
+    --Getters--
+    + model(): torchvision.models.Model
+    + transforms(): torchvision.transforms.Compose
+    + device(): String
+    + weight_path(): String
+    + classify_conf(): Float
+    + color_coef: Float
+    + contrast_coef: Float
+    + bright_coef: Float
+    --Methods--
+    + {abstract} createModel(): void
+    + process(pil_image: Image): (numpy.array,numpy.array)
 }
 
-class YoloModel {
+class DenseModel{
+    --Constructor--
+    +__init__(weight_path: String, classify_conf: Float)
+    --Methods--
+    + create_model(): void
+    + process(pil_image: Image): (numpy.array,numpy.array)
+}
+
+class YoloModel{
+    --Constructor--
+    +__init__(weight_path: String, classify_conf: Float)
+    --Methods--
+    + create_model(): void
+    + process(pil_image: Image): (numpy.array,numpy.array)
+}
+class InceptionModel{
+    --Constructor--
+    +__init__(weight_path: String, classify_conf: Float)
+    --Methods--
+    + create_model(): void
+    + process(pil_image: Image): (numpy.array,numpy.array)
+}
+
+
+ProcessModel *-- ClassifyModel
+ClassifyModel <|-- DenseModel
+ClassifyModel <|-- InceptionModel
+ClassifyModel <|-- YoloModel
+
+class YoloDetect {
 - _path_weights: String
 - _imgsz: Integer
 - _conf: Float
 - _iou: Float
 - _model: Model
 + __init__(imgsz: Integer, path: String, conf: Float, iou: Float): YoloModel
-+ change_parameters(imgsz: Integer, path: String, conf: Float, iou: Float): YoloModel
-+ create_model(path: String, number: Integer): YoloModel
-+ process(path: String): YoloModel
-..Setter..
++ process(process_path:String,save_path:String): list
+--Setter--
 + path_weights=(String)
 + imgsz=(Integer)
 + conf = (Float)
 + iou = (Float)
 + model = (Model)
-..Getters..
+--Getters--
 + path_weights(): String
 + imgsz(): Integer
 + conf(): Float
 + iou(): Float
 + model(): Model
 }
+
+ComplexModel *-- YoloDetect
 
 class Settings{
 + controller: SettingsController
@@ -64,7 +179,7 @@ class MainWindow{
 }
 class MainWindowController{
 + _window: MainWindow
-+ _model: YoloModel
++ _model: ComplexModel
 + clicked_settings(): None
 + clicked_dir(): None
 + clicked_file(): None
@@ -72,39 +187,35 @@ class MainWindowController{
 + clicked_clear(): None
 ..Setters..
 + window = (MainWindow)
-+ model = (YoloModel)
++ model = ComplexModel)
 ..Getters..
 + window(): MainWindow
-+ model(): YoloModel
++ model(): ComplexModel
 }
 class SettingsController{
 + _window: Settings
-+ _model: YoloModel
++ _model: ComplexModel
 + choose_weights(): None
 + change_model(): None
 + create_model(): None
 + close(): None
 ..Setters..
 + window = (Settings)
-+ model = (YoloModel))
++ model = (ComplexModel)
 ..Getters..
 + window(): Settings
-+ model(): YoloModel
++ model(): ComplexModel
 }
 
-Model <|-- ModelOnePng
-Model <|-- ModelMultiple
-Model <|-- ModelShowVideo
 
-YoloModel *-- Model
 
 MainWindow *-- MainWindowController
 MainWindowController *-- MainWindow
 
 Settings *-- SettingsController
 SettingsController *-- Settings
-SettingsController o-- YoloModel
+SettingsController o-- ComplexModel
 
-MainWindowController *-- YoloModel
+MainWindowController *-- ComplexModel
 
 @enduml

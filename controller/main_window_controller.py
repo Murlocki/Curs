@@ -1,7 +1,7 @@
 
 from view import settings
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from model import yoloModel
+from model import YoloDetect
 from model import ComplexModel
 import os
 from pathlib import Path
@@ -10,6 +10,7 @@ class MainWindowController():
     def __init__(self,window):
         self._window = window
         self._model = ComplexModel.ComplexModel()
+        self._model.create_model()
     def clicked_settings(self):
         sets = settings.Settings(self.model)
         sets = sets.create()
@@ -43,13 +44,19 @@ class MainWindowController():
     def clicked_start(self):
         f = Path(self.window.Input.text())
         if (f.is_file() or f.is_dir() ) and self.window.Input.text() != '':
-            if self.window.img.isChecked():
-                self.model = self.model.create_model(self.window.Input.text(), 1)
-                print(1)
-            elif self.window.video.isChecked():
-                self.model = self.model.create_model(self.window.Input.text(), 2)
-                print(2)
-            self.model.process(self.window.Input.text())
+            show_regime = 1 if self.window.img.isChecked() else 2
+
+            #Выбираем модель классификации
+            classify_model="inception"
+            if self.window.dense_net.isChecked():
+                classify_model = "dense"
+            elif self.window.inception.isChecked():
+                classify_model = "inception"
+            elif self.window.yolo.isChecked():
+                classify_model = "yolo"
+
+            self.model.create_model(classify_model)
+            self.model.process(self.window.Input.text(),show_regime)
 
         else:
             m = QMessageBox(1, "Выбор файлов", "Неверно выбрано значение")
